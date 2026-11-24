@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>منيو الكافيه الرقمي ومولّد QR Code</title>
+  
+  <!-- خطوط عربية أنيقة من Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS للتنسيق المتجاوب -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- مكتبة QRCode.js الحقيقية لتوليد كود قابل للمسح الفوري -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            tajawal: ['Tajawal', 'sans-serif'],
+          },
+          colors: {
+            espresso: {
+              950: '#1c120c',
+              900: '#2c1d14',
+              800: '#3e291d',
+              700: '#573a29',
+              600: '#734d37',
+            },
+            latte: {
+              50: '#fdfaf6',
+              100: '#f7f0e6',
+              200: '#eddcc7',
+              300: '#dfc29e',
+            },
+            gold: {
+              500: '#c58f36',
+              600: '#a87624',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: 'Cairo', 'Tajawal', sans-serif;
+      background-color: #fdfaf6;
+      color: #2c1d14;
+    }
+
+    /* تخصيص شريط التمرير للأقسام */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* تنسيق حاوية الـ QR Code لضمان الوضوح التام */
+    #qrcode-container img,
+    #qrcode-container canvas {
+      margin: 0 auto;
+      border-radius: 12px;
+      display: block !important;
+      max-width: 100%;
+      height: auto !important;
+    }
+
+    /* تنسيق خاص للطباعة */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-qr-card,
+      #printable-qr-card * {
+        visibility: visible;
+      }
+      #printable-qr-card {
+        position: fixed;
+        inset: 0;
+        margin: auto;
+        width: 340px;
+        height: fit-content;
+        box-shadow: none !important;
+        border: 2px solid #2c1d14 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-latte-50 selection:bg-gold-500 selection:text-white">
+
+  <!-- رأس الصفحة (Header) -->
+  <header class="bg-gradient-to-l from-espresso-950 via-espresso-900 to-espresso-800 text-latte-50 shadow-lg sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-gold-500/20 border border-gold-500/40 flex items-center justify-center text-2xl shadow-inner">
+          ☕
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white">منيو الكافيه الرقمي</h1>
+          <p class="text-xs text-latte-300">قائمة المشروبات والحلويات + مولّد QR Code حقيقي</p>
+        </div>
+      </div>
+
+      <!-- أزرار التنقل السريع -->
+      <div class="flex items-center gap-2">
+        <a href="#menu-section" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs sm:text-sm font-semibold transition">
+          📋 المنيو
+        </a>
+        <a href="#qr-section" class="px-3.5 py-2 rounded-xl bg-gold-500 hover:bg-gold-600 text-espresso-950 text-xs sm:text-sm font-bold shadow transition">
+          📱 كود الـ QR
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 sm:py-10 space-y-12">
+
+    <!-- ========================================================= -->
+    <!-- القسم الأول: مولّد الـ QR Code الحقيقي الجاهز للمسح الفوري -->
+    <!-- ========================================================= -->
+    <section id="qr-section" class="bg-white rounded-3xl shadow-md border border-latte-200 overflow-hidden">
+      <div class="bg-espresso-900 text-white px-6 py-5 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <span class="inline-block px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold mb-1">
+            ✓ كود برمجي حقيقي 100% قابل للمسح
+          </span>
+          <h2 class="text-xl sm:text-2xl font-extrabold">مولّد QR Code الفوري للمنيو</h2>
+        </div>
+        <p class="text-xs sm:text-sm text-latte-200 max-w-md">
+          امسح الكود بكاميرا موبايلك الآن للتجربة، أو أدخل رابط صفحتك بعد رفعها لتوزيعه على الطاولات.
+        </p>
+      </div>
+
+      <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- لوحة التحكم والإعدادات (يمين) -->
+        <div class="lg:col-span-7 space-y-5">
+          
+          <!-- اختيار نوع البيانات داخل الـ QR -->
+          <div>
+            <label class="block text-sm font-bold text-espresso-900 mb-2">اختر ما سيفتحه الكود عند المسح:</label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button type="button" id="mode-url-btn" onclick="setQrMode('url')"
+                class="flex items-center justify-center gap-2 p-3.5 rounded-2xl border-2 border-espresso-900 bg-espresso-900 text-white font-bold text-sm transition shadow-sm">
+                <span>🔗</span>
+                <span>رابط صفحة المنيو (URL)</span>
+              </button>
+              <button type="button" id="mode-text-btn" onclick="setQrMode('text')"
+                class="flex items-center justify-center gap-2 p-3.5 rounded-2xl border-2 border-latte-200 bg-latte-50 text-espresso-800 hover:border-espresso-700 font-bold text-sm transition">
+                <span>📄</span>
+                <span>نص المنيو الكامل (بدون نت)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- حقل إدخال الرابط (يظهر في وضع الرابط) -->
+          <div id="url-input-group" class="space-y-2">
+            <label for="qr-url-input" class="block text-sm font-bold text-espresso-800">
+              رابط المنيو الإلكتروني:
+            </label>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input type="url" id="qr-url-input" dir="ltr"
+                placeholder="https://example.com/menu"
+                class="flex-1 px-4 py-3 rounded-2xl border border-latte-300 bg-latte-50 text-espresso-950 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 text-left" />
+              <button type="button" onclick="generateQRCode()"
+                class="px-5 py-3 rounded-2xl bg-espresso-900 hover:bg-espresso-800 text-white font-bold text-sm transition shrink-0">
+                تحديث الكود
+              </button>
+            </div>
+            <p id="local-file-warning" class="hidden text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3 leading-relaxed">
+              💡 <strong>ملاحظة مهمة:</strong> أنت تفتح الملف حالياً من جهازك المحلي (<code class="font-mono">file://</code> أو معاينة مؤقتة). لكي يفتح الرابط عند الزبائن، ارفع هذا الملف مجاناً على موقع مثل <strong>Tiiny.host</strong> أو <strong>Netlify Drop</strong> أو <strong>GitHub Pages</strong>، ثم الصق الرابط هنا وسيعمل الكود مع الجميع فوراً!
+            </p>
+          </div>
+
+          <!-- وصف وضع النص الكامل (يظهر في وضع النص) -->
+          <div id="text-mode-info" class="hidden bg-latte-100 border border-latte-200 rounded-2xl p-4 text-sm text-espresso-800 space-y-1">
+            <p class="font-bold text-espresso-950">✨ وضع النص المباشر (يعمل بدون إنترنت تماماً):</p>
+            <p class="text-xs leading-relaxed">
+              تم تشفير قائمة الأصناف والأسعار بالكامل داخل مربعات الـ QR Code. بمجرد أن يمسحه أي شخص بكاميرا هاتفه، ستظهر له قائمة المشروبات والأسعار على شاشة هاتفه مباشرة حتى لو لم يكن متصلاً بالإنترنت!
+            </p>
+          </div>
+
+          <!-- أزرار التحميل والطباعة -->
+          <div class="pt-2 flex flex-wrap gap-3">
+            <button type="button" onclick="downloadQRCode()"
+              class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gold-500 hover:bg-gold-600 text-espresso-950 font-extrabold text-sm shadow transition">
+              <span>⬇️</span>
+              <span>تحميل صورة الـ QR (PNG)</span>
+            </button>
+            <button type="button" onclick="window.print()"
+              class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-latte-100 hover:bg-latte-200 text-espresso-900 font-bold text-sm border border-latte-300 transition">
+              <span>🖨️</span>
+              <span>طباعة كارت الطاولة</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- بطاقة عرض الـ QR Code القابلة للطباعة (يسار) -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div id="printable-qr-card" class="w-full max-w-xs bg-latte-50 border-2 border-espresso-900 rounded-3xl p-6 text-center shadow-lg relative">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-espresso-900 text-gold-500 text-xs font-bold mb-3">
+              <span>☕</span>
+              <span>SCAN FOR MENU</span>
+            </div>
+            <h3 class="text-lg font-extrabold text-espresso-950 mb-1">امسح الكود لعرض المنيو</h3>
+            <p class="text-xs text-espresso-600 mb-4">وجّه كاميرا الهاتف نحو الكود</p>
+            
+            <!-- الحاوية الفعلية لكود الـ QR -->
+            <div class="bg-white p-4 rounded-2xl border border-latte-200 shadow-inner inline-block mx-auto">
+              <div id="qrcode-container" class="w-52 h-52 flex items-center justify-center"></div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-latte-200">
+              <p id="qr-caption" class="text-xs font-bold text-espresso-800 truncate">جاهز للمسح الفوري</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- القسم الثاني: قائمة المنيو الرقمية الكاملة                 -->
+    <!-- ========================================================= -->
+    <section id="menu-section" class="space-y-6">
+      
+      <!-- عنوان القسم وشريط البحث -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-espresso-950">قائمة الأصناف والأسعار</h2>
+          <p class="text-sm text-espresso-600 mt-1">تصفح جميع المشروبات الساخنة والباردة والحلويات</p>
+        </div>
+
+        <!-- مربع البحث الفوري -->
+        <div class="relative w-full md:w-80">
+          <input type="text" id="menu-search" oninput="filterMenu()"
+            placeholder="ابحث عن مشروب أو صنف (مثلاً: وافل، لاتية)..."
+            class="w-full pl-4 pr-10 py-3 rounded-2xl bg-white border border-latte-300 text-sm text-espresso-950 placeholder-espresso-600/60 focus:outline-none focus:ring-2 focus:ring-gold-500 shadow-sm" />
+          <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-espresso-600">🔍</span>
+        </div>
+      </div>
+
+      <!-- شريط التصفية حسب القسم (Tabs) -->
+      <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
+        <!-- يتم توليد الأزرار تلقائياً عبر الجافاسكريبت -->
+      </div>
+
+      <!-- شبكة عرض الأقسام والأصناف -->
+      <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- يتم توليد بطاقات المنيو تلقائياً عبر الجافاسكريبت -->
+      </div>
+
+      <!-- رسالة في حال عدم وجود نتائج بحث -->
+      <div id="empty-search-state" class="hidden text-center py-12 bg-white rounded-3xl border border-latte-200">
+        <p class="text-3xl mb-2">🧐</p>
+        <p class="text-base font-bold text-espresso-900">لم يتم العثور على صنف مطابق لبحثك</p>
+        <button type="button" onclick="resetFilters()" class="mt-3 px-4 py-2 rounded-xl bg-espresso-900 text-white text-xs font-bold">
+          عرض كل الأصناف
+        </button>
+      </div>
+
+      <!-- تنبيه مراجعة الأسعار -->
+      <div class="bg-latte-100 border border-latte-200 rounded-2xl p-4 text-center text-xs text-espresso-700">
+        * الأسعار بالجنيه المصري — يُرجى مراجعة أي تعديلات مستقبلية في الأسعار مباشرة من مصفوفة البيانات في الكود.
+      </div>
+    </section>
+
+  </main>
+
+  <!-- تذييل الصفحة -->
+  <footer class="bg-espresso-950 text-latte-300 py-6 text-center text-xs mt-12">
+    <p>تم التصميم والتطوير بعناية لسهولة العرض والمسح الفوري via QR Code ☕</p>
+  </footer>
+
+  <!-- صندوق إشعارات مخصص (بديل أنيق لـ alert) -->
+  <div id="toast-box" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl bg-espresso-950 text-white text-sm font-bold shadow-xl border border-gold-500/40 opacity-0 pointer-events-none transition-opacity duration-300">
+    تم بنجاح!
+  </div>
+
+  <script>
+    // =========================================================
+    // 1. بيانات المنيو الكاملة المستخرجة بدقة من الورق المكتوب
+    // =========================================================
+    const menuData = [
+      {
+        id: 'desserts',
+        title: 'ديزرت',
+        icon: '🧇',
+        items: [
+          { name: 'تشيز كيك', price: '60 ج' },
+          { name: 'وافل نوتيلا', price: '50 ج' },
+          { name: 'وافل لوتس', price: '50 ج' },
+          { name: 'وافل وايت شوكليت', price: '50 ج' },
+          { name: 'وافل بيستاشيو', price: '60 ج' }
+        ]
+      },
+      {
+        id: 'coffee-corner',
+        title: 'ركن القهوة',
+        icon: '☕',
+        items: [
+          { name: 'قهوة تركي', price: '25 ج' },
+          { name: 'قهوة فرنساوي', price: '40 ج' },
+          { name: 'قهوة بندق', price: '45 ج' },
+          { name: 'قهوة اسبريسو (سنجل / دبل)', price: '40 / 60 ج' }
+        ]
+      },
+      {
+        id: 'soft-drinks',
+        title: 'سوفت درينك',
+        icon: '🥤',
+        items: [
+          { name: 'كانز', price: '25 ج' },
+          { name: 'استينج', price: '25 ج' },
+          { name: 'بريل', price: '30 ج' },
+          { name: 'ريد بول', price: '80 ج' },
+          { name: 'مياه', price: '10 ج' }
+        ]
+      },
+      {
+        id: 'hot-drinks',
+        title: 'مشاريب سخنة',
+        icon: '🫖',
+        items: [
+          { name: 'شاي', price: '15 ج' },
+          { name: 'شاي فواكة', price: '20 ج' },
+          { name: 'ينسون', price: '15 ج' },
+          { name: 'كركدية', price: '20 ج' },
+          { name: 'نيسكافية', price: '30 ج' },
+          { name: 'نيسكافية حليب', price: '40 ج' },
+          { name: 'نيسكافية بلاك', price: '20 ج' },
+          { name: 'سحلب', price: '50 ج' },
+          { name: 'كابتشينو', price: '40 ج' },
+          { name: 'كابتشينو حليب', price: '55 ج' },
+          { name: 'هوت شوكلت', price: '40 ج' },
+          { name: 'ليمون سخن', price: '15 ج' },
+          { name: 'نعناع', price: '15 ج' },
+          { name: 'حلبة', price: '20 ج' },
+          { name: 'جنزبيل', price: '15 ج' },
+          { name: 'قرفة', price: '15 ج' }
+        ]
+      },
+      {
+        id: 'fresh-juices',
+        title: 'عصائر فريش',
+        icon: '🍹',
+        items: [
+          { name: 'فراولة', price: '40 ج' },
+          { name: 'مانجا', price: '40 ج' },
+          { name: 'جوافة', price: '40 ج' },
+          { name: 'برتقال', price: '40 ج' },
+          { name: 'موز', price: '40 ج' }
+        ]
+      },
+      {
+        id: 'iced-coffee',
+        title: 'آيس كوفي',
+        icon: '🧊',
+        items: [
+          { name: 'ايس لاتية', price: '50 ج' },
+          { name: 'ايس سبانش لاتية', price: '60 ج' },
+          { name: 'ايس موكا', price: '60 ج' },
+          { name: 'ايس موكا وايت', price: '60 ج' },
+          { name: 'فرابتشينو', price: '60 ج' }
+        ]
+      },
+      {
+        id: 'milkshakes',
+        title: 'ميلك شيك',
+        icon: '🥛',
+        items: [
+          { name: 'ميلك شيك شوكليت', price: '50 ج' },
+          { name: 'ميلك شيك أوريو', price: '60 ج' },
+          { name: 'ميلك شيك كراميل', price: '50 ج' },
+          { name: 'ميلك شيك فراولة', price: '55 ج' },
+          { name: 'ميلك شيك مانجا', price: '55 ج' },
+          { name: 'ميلك شيك لوتس', price: '60 ج' }
+        ]
+      }
+    ];
+
+    let activeCategory = 'all';
+    let currentQrMode = 'url'; // 'url' أو 'text'
+
+    // =========================================================
+    // 2. دوال عرض وتصفية المنيو
+    // =========================================================
+    function renderCategoryTabs() {
+      const tabsContainer = document.getElementById('category-tabs');
+      const allBtn = `
+        <button type="button" onclick="selectCategory('all')"
+          class="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition ${
+            activeCategory === 'all'
+              ? 'bg-espresso-900 text-white shadow'
+              : 'bg-white text-espresso-800 border border-latte-200 hover:border-espresso-700'
+          }">
+          ✨ الكل
+        </button>
+      `;
+
+      const categoryBtns = menuData.map(cat => `
+        <button type="button" onclick="selectCategory('${cat.id}')"
+          class="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition flex items-center gap-1.5 ${
+            activeCategory === cat.id
+              ? 'bg-espresso-900 text-white shadow'
+              : 'bg-white text-espresso-800 border border-latte-200 hover:border-espresso-700'
+          }">
+          <span>${cat.icon}</span>
+          <span>${cat.title}</span>
+        </button>
+      `).join('');
+
+      tabsContainer.innerHTML = allBtn + categoryBtns;
+    }
+
+    function selectCategory(catId) {
+      activeCategory = catId;
+      renderCategoryTabs();
+      filterMenu();
+    }
+
+    function resetFilters() {
+      activeCategory = 'all';
+      document.getElementById('menu-search').value = '';
+      renderCategoryTabs();
+      filterMenu();
+    }
+
+    function filterMenu() {
+      const query = document.getElementById('menu-search').value.trim().toLowerCase();
+      const grid = document.getElementById('menu-grid');
+      const emptyState = document.getElementById('empty-search-state');
+
+      let html = '';
+      let visibleCategories = 0;
+
+      menuData.forEach(category => {
+        if (activeCategory !== 'all' && category.id !== activeCategory) return;
+
+        const filteredItems = category.items.filter(item =>
+          item.name.toLowerCase().includes(query) || category.title.toLowerCase().includes(query)
+        );
+
+        if (filteredItems.length === 0) return;
+
+        visibleCategories++;
+        const itemsHtml = filteredItems.map(item => `
+          <li class="flex items-center justify-between py-2.5 border-b border-dashed border-latte-200 last:border-none gap-3">
+            <span class="font-semibold text-espresso-900 text-sm sm:text-base">${item.name}</span>
+            <span class="px-3 py-1 rounded-xl bg-latte-100 text-espresso-950 font-extrabold text-xs sm:text-sm shrink-0 border border-latte-200">
+              ${item.price}
+            </span>
+          </li>
+        `).join('');
+
+        html += `
+          <article class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-md border border-latte-200 transition flex flex-col">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b-2 border-gold-500/30">
+              <div class="flex items-center gap-2.5">
+                <span class="w-10 h-10 rounded-2xl bg-latte-100 flex items-center justify-center text-xl">
+                  ${category.icon}
+                </span>
+                <h3 class="text-lg font-extrabold text-espresso-950">${category.title}</h3>
+              </div>
+              <span class="text-xs font-bold text-espresso-600 bg-latte-50 px-2.5 py-1 rounded-lg">
+                ${filteredItems.length} أصناف
+              </span>
+            </div>
+            <ul class="divide-y divide-transparent flex-1">
+              ${itemsHtml}
+            </ul>
+          </article>
+        `;
+      });
+
+      grid.innerHTML = html;
+      if (visibleCategories === 0) {
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+      }
+    }
+
+    // =========================================================
+    // 3. دوال توليد الـ QR Code الحقيقي القابل للمسح
+    // =========================================================
+    function buildPlainMenuText() {
+      let lines = ['☕ منيو الكافيه ☕', ''];
+      menuData.forEach(cat => {
+        lines.push(`【 ${cat.title} 】`);
+        cat.items.forEach(item => {
+          lines.push(`• ${item.name}: ${item.price}`);
+        });
+        lines.push('');
+      });
+      return lines.join('\n').trim();
+    }
+
+    // ترميز UTF-8 سليم لدعم الحروف العربية داخل مكتبة QRCode.js
+    function encodeUtf8ForQr(str) {
+      return unescape(encodeURIComponent(str));
+    }
+
+    function setQrMode(mode) {
+      currentQrMode = mode;
+      const urlBtn = document.getElementById('mode-url-btn');
+      const textBtn = document.getElementById('mode-text-btn');
+      const urlGroup = document.getElementById('url-input-group');
+      const textInfo = document.getElementById('text-mode-info');
+
+      if (mode === 'url') {
+        urlBtn.className = 'flex items-center justify-center gap-2 p-3.5 rounded-2xl border-2 border-espresso-900 bg-espresso-900 text-white font-bold text-sm transition shadow-sm';
+        textBtn.className = 'flex items-center justify-center gap-2 p-3.5 rounded-2xl border-2 border-latte-200 bg-latte-50 text-espresso-800 hover:border-espresso-700 font-bold text-sm transition';
+        urlGroup.classList.remove('hidden');
+        textInfo.classList.add('hidden');
+      } else {
+        textBtn.className = 'flex items-center justify-center gap-2 p-3.5 rounded-2xl border-2 border-espresso-900 bg-espresso-900 text-white font-bold text-sm transition shadow-sm';
+        urlBtn.className = 'flex items-center justify-center gap-2 p-3.5 rounded-2xl border-2 border-latte-200 bg-latte-50 text-espresso-800 hover:border-espresso-700 font-bold text-sm transition';
+        urlGroup.classList.add('hidden');
+        textInfo.classList.remove('hidden');
+      }
+
+      generateQRCode();
+    }
+
+    function generateQRCode() {
+      const container = document.getElementById('qrcode-container');
+      const caption = document.getElementById('qr-caption');
+      const urlInput = document.getElementById('qr-url-input');
+
+      container.innerHTML = '';
+
+      let payload = '';
+      let correctLevel = QRCode.CorrectLevel.M;
+
+      if (currentQrMode === 'url') {
+        const rawUrl = urlInput.value.trim();
+        payload = rawUrl || window.location.href;
+        caption.textContent = payload;
+        correctLevel = QRCode.CorrectLevel.H;
+      } else {
+        // نص المنيو الكامل مشفّر بـ UTF-8
+        payload = encodeUtf8ForQr(buildPlainMenuText());
+        caption.textContent = 'منيو الكافيه الكامل (نص مباشر)';
+        correctLevel = QRCode.CorrectLevel.L; // مستوى L يسمح باستيعاب نص عربي طويل بوضوح عالٍ
+      }
+
+      try {
+        new QRCode(container, {
+          text: payload,
+          width: 220,
+          height: 220,
+          colorDark: '#1c120c',
+          colorLight: '#ffffff',
+          correctLevel: correctLevel
+        });
+      } catch (err) {
+        showToast('حدث خطأ أثناء توليد الكود، تأكد من طول النص.');
+        console.error(err);
+      }
+    }
+
+    function downloadQRCode() {
+      const container = document.getElementById('qrcode-container');
+      const canvas = container.querySelector('canvas');
+      const img = container.querySelector('img');
+
+      let dataUrl = '';
+      if (canvas) {
+        dataUrl = canvas.toDataURL('image/png');
+      } else if (img && img.src) {
+        dataUrl = img.src;
+      }
+
+      if (!dataUrl) {
+        showToast('لم يتم العثور على صورة الكود للتحميل.');
+        return;
+      }
+
+      // إضافة إطار أبيض حول الكود في الصورة المحملة لضمان سهولة قراءة الكاميرات
+      const exportCanvas = document.createElement('canvas');
+      const padding = 28;
+      exportCanvas.width = 220 + padding * 2;
+      exportCanvas.height = 220 + padding * 2;
+      const ctx = exportCanvas.getContext('2d');
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+      const tempImg = new Image();
+      tempImg.onload = function () {
+        ctx.drawImage(tempImg, padding, padding, 220, 220);
+        const link = document.createElement('a');
+        link.download = 'cafe-menu-qr-code.png';
+        link.href = exportCanvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast('تم تحميل صورة الـ QR Code بنجاح!');
+      };
+      tempImg.src = dataUrl;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast-box');
+      toast.textContent = message;
+      toast.classList.remove('opacity-0');
+      setTimeout(() => {
+        toast.classList.add('opacity-0');
+      }, 2800);
+    }
+
+    // =========================================================
+    // 4. التهيئة عند تحميل الصفحة
+    // =========================================================
+    window.onload = function () {
+      renderCategoryTabs();
+      filterMenu();
+
+      const currentUrl = window.location.href;
+      const urlInput = document.getElementById('qr-url-input');
+      const warningBox = document.getElementById('local-file-warning');
+
+      // التحقق مما إذا كانت الصفحة مرفوعة على رابط عام أم مفتوحة محلياً
+      if (currentUrl.startsWith('http://') || currentUrl.startsWith('https://')) {
+        urlInput.value = currentUrl;
+      } else {
+        urlInput.value = 'https://your-cafe-menu.tiiny.site';
+        warningBox.classList.remove('hidden');
+      }
+
+      generateQRCode();
+    };
+  </script>
+</body>
+</html>
